@@ -6,11 +6,13 @@
 #define PUBLIC          /* C design pattern */
 #define PRIVATE static
 
+struct node{
+  Item data;
+  struct node *next;
+};
 
 struct Stack_type{
-  Item *contents;
-  int top;
-  int size; //size of the stack
+  struct node *top;
 };
 
 PRIVATE void terminate(const char* message){
@@ -18,45 +20,49 @@ PRIVATE void terminate(const char* message){
   exit(EXIT_FAILURE);
 }
 
-PUBLIC Stack create(int size){
+PUBLIC Stack create(void){
   Stack s = malloc(sizeof(struct Stack_type));
-  if(s == NULL)
+  if(s == NULL)  // assert(s == NULL);
     terminate("error creating stack");
-  s->contents = malloc(size*sizeof(Item));
-  if(s->contents == NULL){
-    free(s);
-    terminate("Error in create: Stack could not bt created");
-  }
-  s->top = 0;
-  s->size = size;
+  s->top = NULL;
   return s;
 }
 
 PUBLIC void destroy(Stack s){
-  free(s->contents);
+  make_empty(s);
   free(s);
 }
 
 PUBLIC void make_empty(Stack s){
-  s->top = 0;
+  while(!is_empty(s))
+    pop(s);
 }
 
 PUBLIC bool is_empty(Stack s){
-  return s->top == 0;
+  return s->top == NULL;
 }
 
 PUBLIC bool is_full(Stack s){
-  return s->top == s->size;
+  return false;
 }
 
 PUBLIC void push(Stack s, Item i){
-  if(is_full(s))
-    terminate("Error in push: stack is full.");
-  s->contents[s->top++] = i;
+  struct node *new_node = malloc(sizeof(struct node));
+  if(new_node == NULL)  //assert(new_node == NULL);
+    terminate("Error creating node.");
+  new_node->data = i;
+  new_node->next = s->top;
+  s->top = new_node;
 }
 
 PUBLIC Item pop(Stack s){
-  if(is_empty(s))
-    terminate("Error in pop: Stack is empty.");
-  return s->contents[--s->top];
+  struct node *old_top;
+  Item i;
+  if(is_empty(s)) //assert(s == NULL);
+    terminate("Error in pop: stack is Empty.");
+  old_top = s->top;
+  i = old_top->data;
+  s->top = old_top->next;
+  free(old_top);
+  return i;
 }

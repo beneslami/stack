@@ -10,7 +10,8 @@ that a variable of type s is a pointer to a structure with tag Stack.
 */
 typedef struct Stack_type *Stack;
 typedef int Item;
-Stack create(int);
+
+Stack create(void);
 void destroy(Stack s);
 void make_empty(Stack s);
 bool is_empty(Stack s);

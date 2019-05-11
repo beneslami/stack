@@ -2,10 +2,9 @@
 #include <stdio.h>
 
 int main(){
-  Stack s1;
+  Stack s1 = create(); 
   int n;
 
-  s1 = create(5);
   push(s1, 1);
   push(s1, 2);
   push(s1, 3);
